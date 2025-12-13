@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImageCompress Pro - Free Image Compression Tool</title>
+    <meta name="description" content="Compress images online for free. Reduce file size while maintaining quality.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <h1 class="text-2xl font-bold text-gray-800">ImageCompress Pro</h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <span id="usage-counter" class="text-sm text-gray-600">0/10 free today</span>
+                <button onclick="showDonateModal()" class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 border border-yellow-300 flex items-center gap-2">
+                    <span>☕</span>
+                    <span class="hidden sm:inline">Buy Me Coffee</span>
+                </button>
+                <button onclick="showPremiumModal()" class="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all flex items-center gap-2">
+                    <span>⚡</span>
+                    <span>Go Pro</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Top Ad Space -->
+    <div class="max-w-7xl mx-auto px-4 py-4" id="top-ad">
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
+            <div class="text-xs text-gray-500 mb-2">Advertisement</div>
+            <div class="bg-white rounded min-h-[90px] flex items-center justify-center">
+                <!-- REPLACE WITH YOUR ADSENSE CODE -->
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"
+                     crossorigin="anonymous"></script>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+                     data-ad-slot="YOUR_AD_SLOT_ID"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+                <!-- END ADSENSE CODE -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-xl shadow-lg p-8">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold mb-2">Compress Images Instantly</h2>
+                <p class="text-gray-600">Reduce file size while maintaining quality</p>
+            </div>
+
+            <!-- Upload Area -->
+            <div onclick="document.getElementById('file-input').click()" class="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all mb-6">
+                <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                <p class="text-lg mb-2">Click to upload or drag & drop</p>
+                <p class="text-sm text-gray-500">JPG, PNG, WebP (Max 10MB)</p>
+                <input type="file" id="file-input" accept="image/*" class="hidden" onchange="handleFileUpload(event)">
+            </div>
+
+            <!-- Compression Controls -->
+            <div id="controls" class="hidden mb-6">
+                <label class="block text-sm font-semibold mb-2">
+                    Compression Level: <span id="quality-value">70</span>%
+                </label>
+                <input type="range" id="quality-slider" min="0" max="100" value="70" class="w-full h-2 bg-gray-200 rounded-lg cursor-pointer" oninput="updateQuality(this.value)">
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>Smaller File</span>
+                    <span>Better Quality</span>
+                </div>
+            </div>
+
+            <!-- Preview Area -->
+            <div id="preview-area" class="hidden grid md:grid-cols-2 gap-6 mb-6">
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-semibold mb-3">Original</h3>
+                    <img id="original-preview" src="" alt="Original" class="w-full rounded mb-3">
+                    <div class="text-sm text-gray-600" id="original-size">Size: --</div>
+                </div>
+                <div class="border rounded-lg p-4">
+                    <h3 class="font-semibold mb-3">Compressed</h3>
+                    <img id="compressed-preview" src="" alt="Compressed" class="w-full rounded mb-3">
+                    <div class="text-sm text-gray-600 mb-2" id="compressed-size">Size: --</div>
+                    <div class="text-sm font-semibold text-green-600" id="savings">Saved: --%</div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-4">
+                <button onclick="compressImage()" id="compress-btn" class="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50" disabled>
+                    Compress Image
+                </button>
+                <button onclick="downloadImage()" id="download-btn" class="hidden px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 flex items-center gap-2">
+                    <span>⬇️</span> Download
+                </button>
+            </div>
+        </div>
+
+        <!-- Affiliate Marketing Section -->
+        <div class="mt-8 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border-2 border-purple-200">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="text-2xl">🎁</span>
+                <h3 class="text-xl font-bold text-gray-800">Recommended Tools for Designers</h3>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4">
+                <!-- Canva Affiliate -->
+                <a href="https://www.canva.com" target="_blank" onclick="trackAffiliate('canva')" class="bg-white p-4 rounded-lg border-2 border-transparent hover:border-purple-500 transition-all group">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-bold">C</div>
+                        <span class="text-gray-400 group-hover:text-purple-600">→</span>
+                    </div>
+                    <h4 class="font-bold mb-1">Canva Pro</h4>
+                    <p class="text-sm text-gray-600">Professional design tool with templates</p>
+                    <div class="mt-2 text-xs text-purple-600 font-semibold">Try Free →</div>
+                </a>
+
+                <!-- Shutterstock Affiliate -->
+                <a href="https://www.shutterstock.com" target="_blank" onclick="trackAffiliate('shutterstock')" class="bg-white p-4 rounded-lg border-2 border-transparent hover:border-red-500 transition-all group">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg flex items-center justify-center text-white font-bold">S</div>
+                        <span class="text-gray-400 group-hover:text-red-600">→</span>
+                    </div>
+                    <h4 class="font-bold mb-1">Shutterstock</h4>
+                    <p class="text-sm text-gray-600">Millions of stock photos & vectors</p>
+                    <div class="mt-2 text-xs text-red-600 font-semibold">Get 10 Free Images →</div>
+                </a>
+
+                <!-- Hostinger Affiliate -->
+                <a href="https://www.hostinger.com" target="_blank" onclick="trackAffiliate('hostinger')" class="bg-white p-4 rounded-lg border-2 border-transparent hover:border-blue-500 transition-all group">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center text-white font-bold">H</div>
+                        <span class="text-gray-400 group-hover:text-blue-600">→</span>
+                    </div>
+                    <h4 class="font-bold mb-1">Hostinger</h4>
+                    <p class="text-sm text-gray-600">Fast & affordable web hosting</p>
+                    <div class="mt-2 text-xs text-blue-600 font-semibold">Save 75% Now →</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Middle Ad Space -->
+        <div class="my-8 bg-gray-50 border border-gray-200 rounded-lg p-3 text-center" id="middle-ad">
+            <div class="text-xs text-gray-500 mb-2">Advertisement</div>
+            <div class="bg-white rounded min-h-[250px] flex items-center justify-center">
+                <!-- REPLACE WITH YOUR ADSENSE CODE -->
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"
+                     crossorigin="anonymous"></script>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-YOUR_PUBLISHER_ID"
+                     data-ad-slot="YOUR_AD_SLOT_ID"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+                <!-- END ADSENSE CODE -->
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="grid md:grid-cols-4 gap-6 mt-8">
+            <div class="bg-white p-6 rounded-xl shadow-md text-center">
+                <div class="text-4xl mb-3">⚡</div>
+                <h3 class="font-bold mb-2">Fast Processing</h3>
+                <p class="text-sm text-gray-600">Compress in seconds</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md text-center">
+                <div class="text-4xl mb-3">🔒</div>
+                <h3 class="font-bold mb-2">100% Private</h3>
+                <p class="text-sm text-gray-600">Processed locally</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md text-center">
+                <div class="text-4xl mb-3">📊</div>
+                <h3 class="font-bold mb-2">80% Smaller</h3>
+                <p class="text-sm text-gray-600">Massive savings</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md text-center">
+                <div class="text-4xl mb-3">⚙️</div>
+                <h3 class="font-bold mb-2">Full Control</h3>
+                <p class="text-sm text-gray-600">Adjust quality</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Premium Modal -->
+    <div id="premium-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-8 relative">
+            <button onclick="closePremiumModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl">⚡</div>
+                <h2 class="text-3xl font-bold mb-2">Upgrade to Pro</h2>
+                <p class="text-gray-600">Unlock unlimited compressions and premium features</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-6 mb-6">
+                <div class="text-4xl font-bold text-center mb-2">
+                    $4.99<span class="text-lg text-gray-600">/month</span>
+                </div>
+                <div class="text-center text-sm text-gray-600">Cancel anytime</div>
+            </div>
+
+            <div class="space-y-3 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs">✓</div>
+                    <span>Unlimited compressions</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs">✓</div>
+                    <span>Batch processing (50 images)</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs">✓</div>
+                    <span>No advertisements</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs">✓</div>
+                    <span>Priority support</span>
+                </div>
+            </div>
+
+            <button onclick="upgradeToPremium()" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all">
+                💳 Upgrade Now
+            </button>
+            
+            <p class="text-xs text-center text-gray-500 mt-4">
+                Secure payment via Stripe • Cancel anytime
+            </p>
+        </div>
+    </div>
+
+    <!-- Donate Modal -->
+    <div id="donate-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-8 relative">
+            <button onclick="closeDonateModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-yellow-400 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl">☕</div>
+                <h2 class="text-3xl font-bold mb-2">Buy Me a Coffee</h2>
+                <p class="text-gray-600">Support this free tool!</p>
+            </div>
+
+            <div class="space-y-3 mb-6">
+                <a href="https://www.buymeacoffee.com/YOUR_USERNAME" target="_blank" onclick="trackDonation('buymeacoffee')" class="block w-full bg-yellow-400 text-gray-900 py-4 rounded-xl font-bold text-lg hover:bg-yellow-500 transition-all text-center">
+                    ☕ Buy Me a Coffee ($5)
+                </a>
+                
+                <a href="https://ko-fi.com/YOUR_USERNAME" target="_blank" onclick="trackDonation('kofi')" class="block w-full bg-blue-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-600 transition-all text-center">
+                    💙 Support on Ko-fi ($3)
+                </a>
+
+                <a href="https://www.paypal.com/donate/?hosted_button_id=YOUR_BUTTON_ID" target="_blank" onclick="trackDonation('paypal')" class="block w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition-all text-center">
+                    💳 Donate via PayPal
+                </a>
+            </div>
+
+            <p class="text-sm text-center text-gray-600">
+                Your support helps keep this tool free! 🙏
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="mb-2">© 2024 ImageCompress Pro - Free Image Compression Tool</p>
+            <p class="text-sm text-gray-400">Made with ❤️ for designers and developers</p>
+        </div>
+    </footer>
+
+    <script>
+        // Global variables
+        let originalImage = null;
+        let compressedBlob = null;
+        let dailyUsage = parseInt(localStorage.getItem('dailyUsage') || '0');
+        let lastUsageDate = localStorage.getItem('lastUsageDate') || '';
+        const FREE_LIMIT = 10;
+
+        // Check if it's a new day
+        const today = new Date().toDateString();
+        if (lastUsageDate !== today) {
+            dailyUsage = 0;
+            localStorage.setItem('dailyUsage', '0');
+            localStorage.setItem('lastUsageDate', today);
+        }
+
+        updateUsageCounter();
+
+        function updateUsageCounter() {
+            document.getElementById('usage-counter').textContent = `${dailyUsage}/${FREE_LIMIT} free today`;
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Check daily limit
+            if (dailyUsage >= FREE_LIMIT) {
+                showPremiumModal();
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File too large! Maximum size is 10MB.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    originalImage = { img, file };
+                    document.getElementById('original-preview').src = e.target.result;
+                    document.getElementById('original-size').textContent = `Size: ${(file.size / 1024).toFixed(2)} KB`;
+                    document.getElementById('controls').classList.remove('hidden');
+                    document.getElementById('preview-area').classList.remove('hidden');
+                    document.getElementById('compress-btn').disabled = false;
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updateQuality(value) {
+            document.getElementById('quality-value').textContent = value;
+        }
+
+        function compressImage() {
+            if (!originalImage) return;
+
+            const quality = parseInt(document.getElementById('quality-slider').value) / 100;
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = originalImage.img.width;
+            canvas.height = originalImage.img.height;
+            ctx.drawImage(originalImage.img, 0, 0);
+
+            canvas.toBlob((blob) => {
+                compressedBlob = blob;
+                const url = URL.createObjectURL(blob);
+                
+                document.getElementById('compressed-preview').src = url;
+                document.getElementById('compressed-size').textContent = `Size: ${(blob.size / 1024).toFixed(2)} KB`;
+                
+                const savings = ((originalImage.file.size - blob.size) / originalImage.file.size * 100).toFixed(1);
+                document.getElementById('savings').textContent = `Saved: ${savings}%`;
+                document.getElementById('download-btn').classList.remove('hidden');
+
+                // Update usage
+                dailyUsage++;
+                localStorage.setItem('dailyUsage', dailyUsage.toString());
+                updateUsageCounter();
+            }, 'image/jpeg', quality);
+        }
+
+        function downloadImage() {
+            if (!compressedBlob) return;
+            
+            const url = URL.createObjectURL(compressedBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `compressed-${originalImage.file.name}`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function showPremiumModal() {
+            document.getElementById('premium-modal').classList.remove('hidden');
+        }
+
+        function closePremiumModal() {
+            document.getElementById('premium-modal').classList.add('hidden');
+        }
+
+        function showDonateModal() {
+            document.getElementById('donate-modal').classList.remove('hidden');
+        }
+
+        function closeDonateModal() {
+            document.getElementById('donate-modal').classList.add('hidden');
+        }
+
+        function upgradeToPremium() {
+            // In production, redirect to Stripe checkout
+            alert('Redirecting to Stripe payment...\n\nReplace this with your Stripe checkout URL');
+            window.location.href = 'https://buy.stripe.com/YOUR_PAYMENT_LINK';
+        }
+
+        function trackAffiliate(platform) {
+            console.log(`Affiliate click: ${platform}`);
+            // Add analytics tracking here
+        }
+
+        function trackDonation(platform) {
+            console.log

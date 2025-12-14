@@ -66,33 +66,7 @@ Pull requests welcome! For major changes, please open an issue first.
 
 ---
 
-Made with ❤️ by [Your Name]
-```
+Made with ❤️ by Shaheera Sadia
+ 
 
----
-
-## 📁 **FILE 3: `.gitignore`**
-```
-# Dependencies
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Production
-/build
-/dist
-
-# Misc
-.DS_Store
-.env
-.env.local
-.env.production.local
-.vercel
-
-# Editor
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+ 

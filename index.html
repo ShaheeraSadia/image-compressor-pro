@@ -1,687 +1,384 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { CreditCard, Zap, Lock, TrendingUp, Download, Upload, Settings, BarChart3, X, Camera, Coffee, ExternalLink, Gift } from 'lucide-react';
-
-const ImageCompressPro = () => {
-  const [originalImage, setOriginalImage] = useState(null);
-  const [compressedImages, setCompressedImages] = useState([]);
-  const [compressionLevel, setCompressionLevel] = useState(70);
-  const [isCompressing, setIsCompressing] = useState(false);
-  const [isPremium, setIsPremium] = useState(false);
-  const [dailyUsage, setDailyUsage] = useState(0);
-  const [showPremiumModal, setShowPremiumModal] = useState(false);
-  const [showAnalytics, setShowAnalytics] = useState(false);
-  const [showDonateModal, setShowDonateModal] = useState(false);
-  const [batchMode, setBatchMode] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  
-  const fileInputRef = useRef(null);
-  const FREE_LIMIT = 10;
-
-  // Analytics data
-  const [analytics, setAnalytics] = useState({
-    totalCompressions: 0,
-    totalSavings: 0,
-    adRevenue: 0,
-    premiumRevenue: 0,
-    donationRevenue: 0,
-    affiliateRevenue: 0,
-    visitors: 0
-  });
-
-  useEffect(() => {
-    // Simulate analytics tracking
-    const interval = setInterval(() => {
-      setAnalytics(prev => ({
-        ...prev,
-        visitors: prev.visitors + Math.floor(Math.random() * 5)
-      }));
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleFileSelect = (e) => {
-    const files = Array.from(e.target.files);
-    if (batchMode && isPremium) {
-      setSelectedFiles(files);
-    } else if (files.length > 0) {
-      loadImage(files[0]);
-    }
-  };
-
-  const loadImage = (file) => {
-    if (!isPremium && dailyUsage >= FREE_LIMIT) {
-      setShowPremiumModal(true);
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        setOriginalImage({ img, file, url: e.target.result });
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const compressImage = async () => {
-    if (!originalImage) return;
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImageCompress Pro - Free Online Image Compression Tool</title>
+    <meta name="description" content="Compress images online for free. Reduce file size by up to 80% while maintaining quality. Fast, secure, and easy to use.">
+    <meta name="keywords" content="image compression, compress images, reduce file size, optimize images, image optimizer">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .btn-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen">
     
-    setIsCompressing(true);
-    
-    setTimeout(() => {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      
-      canvas.width = originalImage.img.width;
-      canvas.height = originalImage.img.height;
-      ctx.drawImage(originalImage.img, 0, 0);
-      
-      const quality = compressionLevel / 100;
-      
-      canvas.toBlob((blob) => {
-        const url = URL.createObjectURL(blob);
-        const savings = ((originalImage.file.size - blob.size) / originalImage.file.size * 100).toFixed(1);
-        
-        setCompressedImages([{
-          url,
-          blob,
-          originalSize: originalImage.file.size,
-          compressedSize: blob.size,
-          savings,
-          name: originalImage.file.name
-        }]);
-        
-        setDailyUsage(prev => prev + 1);
-        setAnalytics(prev => ({
-          ...prev,
-          totalCompressions: prev.totalCompressions + 1,
-          totalSavings: prev.totalSavings + (originalImage.file.size - blob.size),
-          adRevenue: prev.adRevenue + (isPremium ? 0 : 0.05)
-        }));
-        
-        setIsCompressing(false);
-      }, 'image/jpeg', quality);
-    }, 1000);
-  };
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex flex-wrap justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <h1 class="text-xl sm:text-2xl font-bold text-gray-800">ImageCompress Pro</h1>
+                </div>
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <span id="usage-counter" class="text-xs sm:text-sm text-gray-600 font-medium">0/10 free today</span>
+                    <button onclick="showDonateModal()" class="px-3 sm:px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 border border-yellow-300 flex items-center gap-2 transition-all btn-hover">
+                        <span class="text-lg">☕</span>
+                        <span class="hidden sm:inline font-medium">Donate</span>
+                    </button>
+                    <button onclick="showStatsModal()" class="px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center gap-2 transition-all btn-hover">
+                        <span class="text-lg">📊</span>
+                        <span class="hidden sm:inline font-medium">Stats</span>
+                    </button>
+                    <button onclick="showPremiumModal()" class="px-3 sm:px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all flex items-center gap-2 font-semibold btn-hover">
+                        <span>⚡</span>
+                        <span>Pro</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
 
-  const compressBatch = async () => {
-    if (!isPremium || selectedFiles.length === 0) return;
-    
-    setIsCompressing(true);
-    const results = [];
-    
-    for (const file of selectedFiles) {
-      await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const img = new Image();
-          img.onload = () => {
+    <section class="py-8 sm:py-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Compress Images Without Losing Quality</h2>
+            <p class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto mb-6">Reduce image file sizes by up to 80% while maintaining visual quality. Fast, secure, and 100% free.</p>
+        </div>
+    </section>
+
+    <div class="max-w-7xl mx-auto px-4 mb-6" id="top-ad-container">
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
+            <div class="text-xs text-gray-500 mb-2 uppercase tracking-wide">Advertisement</div>
+            <div class="bg-white rounded min-h-[90px] flex items-center justify-center">
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID" crossorigin="anonymous"></script>
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-YOUR_PUBLISHER_ID" data-ad-slot="YOUR_SLOT_ID_1" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 pb-8">
+        <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+            <div class="text-center mb-8">
+                <h3 class="text-2xl sm:text-3xl font-bold mb-2">Start Compressing</h3>
+                <p class="text-gray-600">Upload your image and reduce its file size instantly</p>
+            </div>
+
+            <div onclick="document.getElementById('file-input').click()" class="border-2 border-dashed border-gray-300 rounded-xl p-8 sm:p-12 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all mb-6 group">
+                <svg class="w-16 h-16 mx-auto mb-4 text-gray-400 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                <p class="text-lg sm:text-xl font-semibold mb-2">Click to upload or drag & drop</p>
+                <p class="text-sm text-gray-500">Supports: JPG, PNG, WebP, GIF (Max 10MB)</p>
+                <input type="file" id="file-input" accept="image/*" class="hidden" onchange="handleFileUpload(event)">
+            </div>
+
+            <div id="controls" class="hidden mb-6 fade-in">
+                <label class="block text-sm font-semibold mb-3">
+                    Compression Quality: <span id="quality-value" class="text-blue-600">70</span>%
+                </label>
+                <input type="range" id="quality-slider" min="0" max="100" value="70" class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer" style="accent-color: #3b82f6;" oninput="updateQuality(this.value)">
+                <div class="flex justify-between text-xs text-gray-500 mt-2">
+                    <span>⬅️ Smaller file size</span>
+                    <span>Higher quality ➡️</span>
+                </div>
+            </div>
+
+            <div id="preview-area" class="hidden grid md:grid-cols-2 gap-6 mb-6 fade-in">
+                <div class="border-2 border-gray-200 rounded-xl p-4 bg-gray-50">
+                    <h4 class="font-bold text-lg mb-3 flex items-center gap-2"><span>📁</span> Original Image</h4>
+                    <div class="bg-white rounded-lg p-2 mb-3">
+                        <img id="original-preview" src="" alt="Original" class="w-full h-64 object-contain rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">File size:</span>
+                            <span id="original-size" class="font-semibold">--</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Dimensions:</span>
+                            <span id="original-dimensions" class="font-semibold">--</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-2 border-green-200 rounded-xl p-4 bg-green-50">
+                    <h4 class="font-bold text-lg mb-3 flex items-center gap-2"><span>✨</span> Compressed Image</h4>
+                    <div class="bg-white rounded-lg p-2 mb-3">
+                        <img id="compressed-preview" src="" alt="Compressed" class="w-full h-64 object-contain rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">File size:</span>
+                            <span id="compressed-size" class="font-semibold">--</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Savings:</span>
+                            <span id="savings" class="font-bold text-green-600">--%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button onclick="compressImage()" id="compress-btn" class="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed btn-hover" disabled>
+                    🚀 Compress Image
+                </button>
+                <button onclick="downloadImage()" id="download-btn" class="hidden sm:flex-none px-8 py-4 bg-green-600 text-white rounded-xl font-bold text-lg hover:bg-green-700 transition-all flex items-center justify-center gap-2 btn-hover">
+                    <span>⬇️</span> Download
+                </button>
+            </div>
+        </div>
+
+        <div class="mt-8 bg-gradient-to-r from-purple-50 via-pink-50 to-purple-50 rounded-2xl p-6 sm:p-8 border-2 border-purple-200 shadow-lg">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-3xl">🎁</span>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800">Recommended Tools</h3>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <a href="https://partner.canva.com/YOUR_ID" target="_blank" onclick="trackAffiliate('canva')" class="bg-white p-5 rounded-xl border-2 border-transparent hover:border-purple-500 hover:shadow-lg transition-all group">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md">C</div>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">Canva Pro</h4>
+                    <p class="text-sm text-gray-600 mb-3">Professional design tool with templates</p>
+                    <div class="text-sm text-purple-600 font-bold">Try Free →</div>
+                </a>
+                <a href="https://www.shutterstock.com?rid=YOUR_ID" target="_blank" onclick="trackAffiliate('shutterstock')" class="bg-white p-5 rounded-xl border-2 border-transparent hover:border-red-500 hover:shadow-lg transition-all group">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md">S</div>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">Shutterstock</h4>
+                    <p class="text-sm text-gray-600 mb-3">400M+ royalty-free images</p>
+                    <div class="text-sm text-red-600 font-bold">Get 10 Free →</div>
+                </a>
+                <a href="https://www.hostinger.com?REFERRALCODE=YOUR_CODE" target="_blank" onclick="trackAffiliate('hostinger')" class="bg-white p-5 rounded-xl border-2 border-transparent hover:border-blue-500 hover:shadow-lg transition-all group">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md">H</div>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">Hostinger</h4>
+                    <p class="text-sm text-gray-600 mb-3">Fast web hosting</p>
+                    <div class="text-sm text-blue-600 font-bold">Save 75% →</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+            <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-all text-center group">
+                <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">⚡</div>
+                <h3 class="font-bold text-lg mb-2">Lightning Fast</h3>
+                <p class="text-sm text-gray-600">Compress in seconds</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-all text-center group">
+                <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">🔒</div>
+                <h3 class="font-bold text-lg mb-2">100% Secure</h3>
+                <p class="text-sm text-gray-600">Processed locally</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-all text-center group">
+                <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">📊</div>
+                <h3 class="font-bold text-lg mb-2">80% Smaller</h3>
+                <p class="text-sm text-gray-600">Massive savings</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-all text-center group">
+                <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">⚙️</div>
+                <h3 class="font-bold text-lg mb-2">Full Control</h3>
+                <p class="text-sm text-gray-600">Adjust quality</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="premium-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-8 relative shadow-2xl">
+            <button onclick="closePremiumModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl">⚡</div>
+                <h2 class="text-3xl font-bold mb-3">Upgrade to Pro</h2>
+                <p class="text-gray-600 text-lg">Unlock unlimited compressions</p>
+            </div>
+            <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-6 mb-6">
+                <div class="text-5xl font-bold text-center mb-2">$4.99<span class="text-xl text-gray-600">/mo</span></div>
+            </div>
+            <div class="space-y-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-7 h-7 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">✓</div>
+                    <span>Unlimited compressions</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-7 h-7 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">✓</div>
+                    <span>Batch processing (50 images)</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-7 h-7 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">✓</div>
+                    <span>No ads</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-7 h-7 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">✓</div>
+                    <span>Priority support</span>
+                </div>
+            </div>
+            <button onclick="upgradeToPremium()" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-bold text-lg">
+                💳 Upgrade Now
+            </button>
+        </div>
+    </div>
+
+    <div id="donate-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 relative shadow-2xl">
+            <button onclick="closeDonateModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-yellow-400 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl">☕</div>
+                <h2 class="text-3xl font-bold mb-3">Buy Me a Coffee</h2>
+                <p class="text-gray-600">Support this free tool!</p>
+            </div>
+            <div class="space-y-3">
+                <a href="https://www.buymeacoffee.com/YOUR_USERNAME" target="_blank" onclick="trackDonation('buymeacoffee')" class="block w-full bg-yellow-400 text-gray-900 py-4 rounded-xl font-bold text-lg text-center hover:bg-yellow-500">
+                    ☕ Buy Me a Coffee ($5)
+                </a>
+                <a href="https://ko-fi.com/YOUR_USERNAME" target="_blank" onclick="trackDonation('kofi')" class="block w-full bg-blue-500 text-white py-4 rounded-xl font-bold text-lg text-center hover:bg-blue-600">
+                    💙 Ko-fi ($3)
+                </a>
+                <a href="https://www.paypal.com/donate/?hosted_button_id=YOUR_ID" target="_blank" onclick="trackDonation('paypal')" class="block w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg text-center hover:bg-blue-700">
+                    💳 PayPal
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="stats-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-8 relative shadow-2xl">
+            <button onclick="closeStatsModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <h2 class="text-3xl font-bold mb-6">📊 Your Statistics</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-blue-50 p-4 rounded-xl">
+                    <div class="text-sm text-gray-600">Today's Compressions</div>
+                    <div class="text-3xl font-bold text-blue-600" id="stats-today">0</div>
+                </div>
+                <div class="bg-green-50 p-4 rounded-xl">
+                    <div class="text-sm text-gray-600">Total Saved</div>
+                    <div class="text-3xl font-bold text-green-600" id="stats-saved">0 KB</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="mb-2">© 2024 ImageCompress Pro - Free Image Compression Tool</p>
+            <p class="text-sm text-gray-400">Made with ❤️ for designers and developers</p>
+        </div>
+    </footer>
+
+    <script>
+        let originalImage = null, compressedBlob = null;
+        let dailyUsage = parseInt(localStorage.getItem('dailyUsage') || '0');
+        let totalSaved = parseInt(localStorage.getItem('totalSaved') || '0');
+        let lastDate = localStorage.getItem('lastDate') || '';
+        const FREE_LIMIT = 10;
+
+        const today = new Date().toDateString();
+        if (lastDate !== today) {
+            dailyUsage = 0;
+            localStorage.setItem('dailyUsage', '0');
+            localStorage.setItem('lastDate', today);
+        }
+        updateUsageCounter();
+
+        function updateUsageCounter() {
+            document.getElementById('usage-counter').textContent = `${dailyUsage}/${FREE_LIMIT} free today`;
+        }
+
+        function handleFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (dailyUsage >= FREE_LIMIT) { showPremiumModal(); return; }
+            if (file.size > 10 * 1024 * 1024) { alert('Max 10MB!'); return; }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    originalImage = { img, file };
+                    document.getElementById('original-preview').src = e.target.result;
+                    document.getElementById('original-size').textContent = `${(file.size / 1024).toFixed(2)} KB`;
+                    document.getElementById('original-dimensions').textContent = `${img.width} × ${img.height}`;
+                    document.getElementById('controls').classList.remove('hidden');
+                    document.getElementById('preview-area').classList.remove('hidden');
+                    document.getElementById('compress-btn').disabled = false;
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updateQuality(val) {
+            document.getElementById('quality-value').textContent = val;
+        }
+
+        function compressImage() {
+            if (!originalImage) return;
+            const quality = parseInt(document.getElementById('quality-slider').value) / 100;
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
-            
-            const quality = compressionLevel / 100;
+            canvas.width = originalImage.img.width;
+            canvas.height = originalImage.img.height;
+            ctx.drawImage(originalImage.img, 0, 0);
+
             canvas.toBlob((blob) => {
-              const url = URL.createObjectURL(blob);
-              const savings = ((file.size - blob.size) / file.size * 100).toFixed(1);
-              results.push({
-                url,
-                blob,
-                originalSize: file.size,
-                compressedSize: blob.size,
-                savings,
-                name: file.name
-              });
-              resolve();
+                compressedBlob = blob;
+                const url = URL.createObjectURL(blob);
+                document.getElementById('compressed-preview').src = url;
+                document.getElementById('compressed-size').textContent = `${(blob.size / 1024).toFixed(2)} KB`;
+                const savings = ((originalImage.file.size - blob.size) / originalImage.file.size * 100).toFixed(1);
+                document.getElementById('savings').textContent = `${savings}%`;
+                document.getElementById('download-btn').classList.remove('hidden');
+                dailyUsage++;
+                totalSaved += (originalImage.file.size - blob.size);
+                localStorage.setItem('dailyUsage', dailyUsage);
+                localStorage.setItem('totalSaved', totalSaved);
+                updateUsageCounter();
             }, 'image/jpeg', quality);
-          };
-          img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-    
-    setCompressedImages(results);
-    setAnalytics(prev => ({
-      ...prev,
-      totalCompressions: prev.totalCompressions + results.length,
-      totalSavings: prev.totalSavings + results.reduce((sum, r) => sum + (r.originalSize - r.compressedSize), 0)
-    }));
-    setIsCompressing(false);
-  };
+        }
 
-  const downloadImage = (compressed) => {
-    const a = document.createElement('a');
-    a.href = compressed.url;
-    a.download = `compressed-${compressed.name}`;
-    a.click();
-  };
+        function downloadImage() {
+            if (!compressedBlob) return;
+            const url = URL.createObjectURL(compressedBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `compressed-${originalImage.file.name}`;
+            a.click();
+        }
 
-  const downloadAll = () => {
-    compressedImages.forEach(img => downloadImage(img));
-  };
-
-  const upgradeToPremium = () => {
-    alert('Redirecting to Stripe checkout...\n\nIn production, this would open Stripe payment page.');
-    setIsPremium(true);
-    setShowPremiumModal(false);
-    setAnalytics(prev => ({
-      ...prev,
-      premiumRevenue: prev.premiumRevenue + 4.99
-    }));
-  };
-
-  const handleAffiliateClick = (affiliate) => {
-    setAnalytics(prev => ({
-      ...prev,
-      affiliateRevenue: prev.affiliateRevenue + 0.50 // Simulated click value
-    }));
-  };
-
-  const formatBytes = (bytes) => {
-    return (bytes / 1024).toFixed(2) + ' KB';
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="bg-white shadow-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-4">
-          <div className="flex items-center gap-3">
-            <Camera className="w-8 h-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-800">ImageCompress Pro</h1>
-          </div>
-          <div className="flex items-center gap-3 flex-wrap">
-            {!isPremium && (
-              <div className="text-sm text-gray-600">
-                {dailyUsage}/{FREE_LIMIT} free today
-              </div>
-            )}
-            <button
-              onClick={() => setShowDonateModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 border border-yellow-300"
-            >
-              <Coffee className="w-4 h-4" />
-              <span className="hidden sm:inline">Buy Me a Coffee</span>
-            </button>
-            <button
-              onClick={() => setShowAnalytics(!showAnalytics)}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200"
-            >
-              <BarChart3 className="w-4 h-4" />
-              <span className="hidden sm:inline">Stats</span>
-            </button>
-            {!isPremium ? (
-              <button
-                onClick={() => setShowPremiumModal(true)}
-                className="flex items-center gap-2 px-4 py-2 sm:px-6 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:shadow-lg transition-all"
-              >
-                <Zap className="w-4 h-4" />
-                Go Pro
-              </button>
-            ) : (
-              <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg">
-                <Zap className="w-4 h-4" />
-                Pro
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* Analytics Dashboard */}
-      {showAnalytics && (
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">💰 Revenue Dashboard</h2>
-              <button onClick={() => setShowAnalytics(false)}>
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <div className="text-xs text-gray-600">Compressions</div>
-                <div className="text-2xl font-bold text-blue-600">{analytics.totalCompressions}</div>
-              </div>
-              <div className="bg-green-50 p-4 rounded-lg">
-                <div className="text-xs text-gray-600">Data Saved</div>
-                <div className="text-xl font-bold text-green-600">{formatBytes(analytics.totalSavings)}</div>
-              </div>
-              <div className="bg-purple-50 p-4 rounded-lg">
-                <div className="text-xs text-gray-600">Ad Revenue</div>
-                <div className="text-2xl font-bold text-purple-600">${analytics.adRevenue.toFixed(2)}</div>
-              </div>
-              <div className="bg-yellow-50 p-4 rounded-lg">
-                <div className="text-xs text-gray-600">Premium</div>
-                <div className="text-2xl font-bold text-yellow-600">${analytics.premiumRevenue.toFixed(2)}</div>
-              </div>
-              <div className="bg-pink-50 p-4 rounded-lg">
-                <div className="text-xs text-gray-600">Donations</div>
-                <div className="text-2xl font-bold text-pink-600">${analytics.donationRevenue.toFixed(2)}</div>
-              </div>
-              <div className="bg-indigo-50 p-4 rounded-lg">
-                <div className="text-xs text-gray-600">Affiliate</div>
-                <div className="text-2xl font-bold text-indigo-600">${analytics.affiliateRevenue.toFixed(2)}</div>
-              </div>
-            </div>
-            <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border-2 border-green-200">
-              <div className="text-sm text-gray-600">Total Revenue</div>
-              <div className="text-3xl font-bold text-green-600">
-                ${(analytics.adRevenue + analytics.premiumRevenue + analytics.donationRevenue + analytics.affiliateRevenue).toFixed(2)}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* AdSense Top Banner (Free users only) */}
-      {!isPremium && (
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
-            <div className="text-xs text-gray-500 mb-2">Advertisement</div>
-            {/* REPLACE WITH YOUR ADSENSE CODE */}
-            <div className="bg-white rounded min-h-[90px] flex items-center justify-center">
-              <div className="text-gray-400 text-sm">
-                📍 AdSense 728x90 Banner<br/>
-                <span className="text-xs">Replace this div with your AdSense code</span>
-              </div>
-            </div>
-            {/* AdSense code goes here - See instructions below */}
-          </div>
-        </div>
-      )}
-
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-xl shadow-lg p-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-2">Compress Images Instantly</h2>
-            <p className="text-gray-600">Reduce file size while maintaining quality</p>
-          </div>
-
-          {isPremium && (
-            <div className="flex justify-center mb-6">
-              <button
-                onClick={() => setBatchMode(!batchMode)}
-                className={`px-6 py-2 rounded-lg font-semibold transition-all ${
-                  batchMode ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                {batchMode ? '🔥 Batch Mode: ON' : 'Enable Batch Mode'}
-              </button>
-            </div>
-          )}
-
-          <div
-            onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all mb-6"
-          >
-            <Upload className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-            <p className="text-lg mb-2">
-              {batchMode ? 'Select multiple images' : 'Click to upload or drag & drop'}
-            </p>
-            <p className="text-sm text-gray-500">
-              {batchMode ? 'Process up to 50 images at once' : 'JPG, PNG, WebP (Max 10MB)'}
-            </p>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              multiple={batchMode}
-              onChange={handleFileSelect}
-              className="hidden"
-            />
-          </div>
-
-          {(originalImage || selectedFiles.length > 0) && (
-            <div className="mb-6">
-              <label className="block text-sm font-semibold mb-2">
-                Compression Level: {compressionLevel}%
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={compressionLevel}
-                onChange={(e) => setCompressionLevel(Number(e.target.value))}
-                className="w-full h-2 bg-gray-200 rounded-lg cursor-pointer"
-              />
-              <div className="flex justify-between text-xs text-gray-500 mt-1">
-                <span>Smaller File</span>
-                <span>Better Quality</span>
-              </div>
-            </div>
-          )}
-
-          {originalImage && !batchMode && (
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <div className="border rounded-lg p-4">
-                <h3 className="font-semibold mb-3">Original</h3>
-                <img src={originalImage.url} alt="Original" className="w-full rounded mb-3" />
-                <div className="text-sm text-gray-600">
-                  Size: {formatBytes(originalImage.file.size)}
-                </div>
-              </div>
-              
-              {compressedImages.length > 0 && (
-                <div className="border rounded-lg p-4">
-                  <h3 className="font-semibold mb-3">Compressed</h3>
-                  <img src={compressedImages[0].url} alt="Compressed" className="w-full rounded mb-3" />
-                  <div className="text-sm text-gray-600 mb-2">
-                    Size: {formatBytes(compressedImages[0].compressedSize)}
-                  </div>
-                  <div className="text-sm font-semibold text-green-600">
-                    Saved {compressedImages[0].savings}%
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {batchMode && selectedFiles.length > 0 && compressedImages.length > 0 && (
-            <div className="mb-6 space-y-2">
-              <h3 className="font-semibold mb-3">Processed: {compressedImages.length} images</h3>
-              {compressedImages.map((img, idx) => (
-                <div key={idx} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <img src={img.url} alt={img.name} className="w-12 h-12 object-cover rounded" />
-                    <div>
-                      <div className="font-medium text-sm">{img.name}</div>
-                      <div className="text-xs text-gray-600">
-                        {formatBytes(img.originalSize)} → {formatBytes(img.compressedSize)} ({img.savings}% saved)
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => downloadImage(img)}
-                    className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                  >
-                    <Download className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="flex gap-4">
-            {batchMode ? (
-              <>
-                <button
-                  onClick={compressBatch}
-                  disabled={isCompressing || selectedFiles.length === 0}
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50"
-                >
-                  {isCompressing ? 'Processing...' : `Compress ${selectedFiles.length} Images`}
-                </button>
-                {compressedImages.length > 0 && (
-                  <button onClick={downloadAll} className="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700">
-                    Download All
-                  </button>
-                )}
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={compressImage}
-                  disabled={!originalImage || isCompressing}
-                  className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50"
-                >
-                  {isCompressing ? 'Compressing...' : 'Compress Image'}
-                </button>
-                {compressedImages.length > 0 && (
-                  <button
-                    onClick={() => downloadImage(compressedImages[0])}
-                    className="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 flex items-center gap-2"
-                  >
-                    <Download className="w-5 h-5" /> Download
-                  </button>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Affiliate Marketing Section */}
-        <div className="mt-8 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border-2 border-purple-200">
-          <div className="flex items-center gap-2 mb-4">
-            <Gift className="w-6 h-6 text-purple-600" />
-            <h3 className="text-xl font-bold text-gray-800">Recommended Tools for Designers</h3>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4">
-            <a
-              href="https://www.canva.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => handleAffiliateClick('canva')}
-              className="bg-white p-4 rounded-lg border-2 border-transparent hover:border-purple-500 transition-all group"
-            >
-              <div className="flex items-start justify-between mb-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white font-bold">
-                  C
-                </div>
-                <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-purple-600" />
-              </div>
-              <h4 className="font-bold mb-1">Canva Pro</h4>
-              <p className="text-sm text-gray-600">Professional design tool with templates</p>
-              <div className="mt-2 text-xs text-purple-600 font-semibold">Try Free →</div>
-            </a>
-
-            <a
-              href="https://www.shutterstock.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => handleAffiliateClick('shutterstock')}
-              className="bg-white p-4 rounded-lg border-2 border-transparent hover:border-red-500 transition-all group"
-            >
-              <div className="flex items-start justify-between mb-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg flex items-center justify-center text-white font-bold">
-                  S
-                </div>
-                <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-red-600" />
-              </div>
-              <h4 className="font-bold mb-1">Shutterstock</h4>
-              <p className="text-sm text-gray-600">Millions of stock photos & vectors</p>
-              <div className="mt-2 text-xs text-red-600 font-semibold">Get 10 Free Images →</div>
-            </a>
-
-            <a
-              href="https://www.hostinger.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => handleAffiliateClick('hostinger')}
-              className="bg-white p-4 rounded-lg border-2 border-transparent hover:border-blue-500 transition-all group"
-            >
-              <div className="flex items-start justify-between mb-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center text-white font-bold">
-                  H
-                </div>
-                <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-blue-600" />
-              </div>
-              <h4 className="font-bold mb-1">Hostinger</h4>
-              <p className="text-sm text-gray-600">Fast & affordable web hosting</p>
-              <div className="mt-2 text-xs text-blue-600 font-semibold">Save 75% Now →</div>
-            </a>
-          </div>
-        </div>
-
-        {/* Middle Ad (Free users only) */}
-        {!isPremium && (
-          <div className="my-8 bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
-            <div className="text-xs text-gray-500 mb-2">Advertisement</div>
-            <div className="bg-white rounded min-h-[250px] flex items-center justify-center">
-              <div className="text-gray-400 text-sm">
-                📍 AdSense 336x280 Rectangle<br/>
-                <span className="text-xs">Replace with your AdSense code</span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Features */}
-        <div className="grid md:grid-cols-4 gap-6 mt-8">
-          <div className="bg-white p-6 rounded-xl shadow-md text-center">
-            <Zap className="w-12 h-12 mx-auto mb-3 text-blue-600" />
-            <h3 className="font-bold mb-2">Fast Processing</h3>
-            <p className="text-sm text-gray-600">Compress in seconds</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-md text-center">
-            <Lock className="w-12 h-12 mx-auto mb-3 text-green-600" />
-            <h3 className="font-bold mb-2">100% Private</h3>
-            <p className="text-sm text-gray-600">Processed locally</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-md text-center">
-            <TrendingUp className="w-12 h-12 mx-auto mb-3 text-purple-600" />
-            <h3 className="font-bold mb-2">80% Smaller</h3>
-            <p className="text-sm text-gray-600">Massive savings</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-md text-center">
-            <Settings className="w-12 h-12 mx-auto mb-3 text-orange-600" />
-            <h3 className="font-bold mb-2">Full Control</h3>
-            <p className="text-sm text-gray-600">Adjust quality</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Premium Modal */}
-      {showPremiumModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-8 relative">
-            <button onClick={() => setShowPremiumModal(false)} className="absolute top-4 right-4">
-              <X className="w-6 h-6" />
-            </button>
-            
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <Zap className="w-8 h-8 text-white" />
-              </div>
-              <h2 className="text-3xl font-bold mb-2">Upgrade to Pro</h2>
-              <p className="text-gray-600">Unlock unlimited compressions and premium features</p>
-            </div>
-
-            <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-6 mb-6">
-              <div className="text-4xl font-bold text-center mb-2">
-                $4.99<span className="text-lg text-gray-600">/month</span>
-              </div>
-              <div className="text-center text-sm text-gray-600">Cancel anytime</div>
-            </div>
-
-            <div className="space-y-3 mb-6">
-              {['Unlimited compressions', 'Batch processing (50 images)', 'No advertisements', 'Priority support', 'Advanced algorithms'].map((feature, idx) => (
-                <div key={idx} className="flex items-center gap-3">
-                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs">✓</div>
-                  <span>{feature}</span>
-                </div>
-              ))}
-            </div>
-
-            <button
-              onClick={upgradeToPremium}
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
-            >
-              <CreditCard className="w-5 h-5" />
-              Upgrade Now
-            </button>
-            
-            <p className="text-xs text-center text-gray-500 mt-4">
-              Secure payment via Stripe • Cancel anytime
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Donation Modal */}
-      {showDonateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-8 relative">
-            <button onClick={() => setShowDonateModal(false)} className="absolute top-4 right-4">
-              <X className="w-6 h-6" />
-            </button>
-            
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-yellow-400 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <Coffee className="w-8 h-8 text-white" />
-              </div>
-              <h2 className="text-3xl font-bold mb-2">Buy Me a Coffee ☕</h2>
-              <p className="text-gray-600">Support this free tool and help keep it running!</p>
-            </div>
-
-            <div className="space-y-3 mb-6">
-              <a
-                href="https://www.buymeacoffee.com/YOUR_USERNAME"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => {
-                  setAnalytics(prev => ({ ...prev, donationRevenue: prev.donationRevenue + 5 }));
-                  setShowDonateModal(false);
-                }}
-                className="block w-full bg-yellow-400 text-gray-900 py-4 rounded-xl font-bold text-lg hover:bg-yellow-500 transition-all text-center"
-              >
-                ☕ Buy Me a Coffee ($5)
-              </a>
-              
-              <a
-                href="https://ko-fi.com/YOUR_USERNAME"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => {
-                  setAnalytics(prev => ({ ...prev, donationRevenue: prev.donationRevenue + 3 }));
-                  setShowDonateModal(false);
-                }}
-                className="block w-full bg-blue-500 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-600 transition-all text-center"
-              >
-                💙 Support on Ko-fi ($3)
-              </a>
-
-              <a
-                href="https://www.paypal.com/donate/?hosted_button_id=YOUR_BUTTON_ID"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => {
-                  setAnalytics(prev => ({ ...prev, donationRevenue: prev.donationRevenue + 10 }));
-                  setShowDonateModal(false);
-                }}
-                className="block w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition-all text-center"
-              >
-                💳 Donate via PayPal
-              </a>
-            </div>
-
-            <p className="text-sm text-center text-gray-600">
-              Your support helps keep this tool free for everyone! 🙏
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Footer Ad (Free users only) */}
-      {!isPremium && (
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
-            <div className="text-xs text-gray-500 mb-2">Advertisement</div>
-            <div className="bg-white rounded min-h-[90px] flex items-center justify-center">
-              <div className="text-gray-400 text-sm">
-                📍 AdSense 728x90 Footer<br/>
-                <span className="text-xs">Replace with your AdSense code</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8 mt-12">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="mb-2">© 2024 ImageCompress Pro - Free Image Compression Tool</p>
-          <p className="text-sm text-gray-400">Made with ❤️ for designers and developers</p>
-        </div>
-      </footer>
-    </div>
-  );
-};
-
-export default ImageCompressPro;
+        function showPremiumModal() { document.getElementById('premium-modal').classList.remove('hidden'); }
+        function closePremiumModal() { document.getElementById('premium-modal').classList.add('hidden'); }
+        function showDonateModal() { document.getElementById('donate-modal').classList.remove('hidden'); }
+        function closeDonateModal() { document.getElementById('donate-modal').classList.add('hidden'); }
+        function showStatsModal() { 
+            document.getElementById('stats-modal').classList.remove('hidden'); 
+            document.getElementById('stats-today').textContent = dailyUsage;
+            document.getElementById('stats-saved').textContent = (totalSaved / 1024).toFixed(2) + ' KB';
+        }
+        function closeStatsModal() { document.getElementById('stats-modal').classList.add('hidden'); }
+        function upgradeToPremium() { window.location.href = 'https://buy.stripe.com/YOUR_LINK'; }
+        function trackAffiliate(platform) { console.log('Affiliate:', platform); }
+        function trackDonation(platform) { console.log('Donation:', platform); }
+    </script>
+</body>
+</html>

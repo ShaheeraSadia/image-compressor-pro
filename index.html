@@ -7,13 +7,16 @@
     <meta name="description" content="Compress images online for free. Reduce file size by up to 80% while maintaining quality. Fast, secure, and easy to use.">
     <meta name="keywords" content="image compression, compress images, reduce file size, optimize images, image optimizer">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6309207317896311"
+    
+    <!-- ✅ GOOGLE ADSENSE - YOUR ACTUAL CODE -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6309207317896311"
          crossorigin="anonymous"></script>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; }
-        .btn-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .btn-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.15); transition: all 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in { animation: fadeIn 0.5s ease-out; }
     </style>
@@ -55,13 +58,13 @@
         </div>
     </section>
 
-    <div class="max-w-7xl mx-auto px-4 mb-6" id="top-ad-container">
+    <!-- TOP AD -->
+    <div class="max-w-7xl mx-auto px-4 mb-6">
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
             <div class="text-xs text-gray-500 mb-2 uppercase tracking-wide">Advertisement</div>
             <div class="bg-white rounded min-h-[90px] flex items-center justify-center">
-                 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6309207317896311" crossorigin="anonymous"></script>
-<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6309207317896311" data-ad-format="auto" data-full-width-responsive="true"></ins>
-<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6309207317896311" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
             </div>
         </div>
     </div>
@@ -88,20 +91,20 @@
                 </label>
                 <input type="range" id="quality-slider" min="0" max="100" value="70" class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer" style="accent-color: #3b82f6;" oninput="updateQuality(this.value)">
                 <div class="flex justify-between text-xs text-gray-500 mt-2">
-                    <span>⬅️ Smaller file size</span>
+                    <span>⬅️ Smaller file</span>
                     <span>Higher quality ➡️</span>
                 </div>
             </div>
 
             <div id="preview-area" class="hidden grid md:grid-cols-2 gap-6 mb-6 fade-in">
                 <div class="border-2 border-gray-200 rounded-xl p-4 bg-gray-50">
-                    <h4 class="font-bold text-lg mb-3 flex items-center gap-2"><span>📁</span> Original Image</h4>
+                    <h4 class="font-bold text-lg mb-3 flex items-center gap-2"><span>📁</span> Original</h4>
                     <div class="bg-white rounded-lg p-2 mb-3">
                         <img id="original-preview" src="" alt="Original" class="w-full h-64 object-contain rounded">
                     </div>
                     <div class="space-y-1">
                         <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">File size:</span>
+                            <span class="text-gray-600">Size:</span>
                             <span id="original-size" class="font-semibold">--</span>
                         </div>
                         <div class="flex justify-between text-sm">
@@ -111,17 +114,17 @@
                     </div>
                 </div>
                 <div class="border-2 border-green-200 rounded-xl p-4 bg-green-50">
-                    <h4 class="font-bold text-lg mb-3 flex items-center gap-2"><span>✨</span> Compressed Image</h4>
+                    <h4 class="font-bold text-lg mb-3 flex items-center gap-2"><span>✨</span> Compressed</h4>
                     <div class="bg-white rounded-lg p-2 mb-3">
                         <img id="compressed-preview" src="" alt="Compressed" class="w-full h-64 object-contain rounded">
                     </div>
                     <div class="space-y-1">
                         <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">File size:</span>
+                            <span class="text-gray-600">Size:</span>
                             <span id="compressed-size" class="font-semibold">--</span>
                         </div>
                         <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">Savings:</span>
+                            <span class="text-gray-600">Saved:</span>
                             <span id="savings" class="font-bold text-green-600">--%</span>
                         </div>
                     </div>
@@ -138,32 +141,28 @@
             </div>
         </div>
 
+        <!-- AFFILIATE SECTION -->
         <div class="mt-8 bg-gradient-to-r from-purple-50 via-pink-50 to-purple-50 rounded-2xl p-6 sm:p-8 border-2 border-purple-200 shadow-lg">
             <div class="flex items-center gap-3 mb-6">
                 <span class="text-3xl">🎁</span>
                 <h3 class="text-xl sm:text-2xl font-bold text-gray-800">Recommended Tools</h3>
             </div>
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <a href="https://partner.canva.com/YOUR_ID" target="_blank" onclick="trackAffiliate('canva')" class="bg-white p-5 rounded-xl border-2 border-transparent hover:border-purple-500 hover:shadow-lg transition-all group">
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md">C</div>
-                    </div>
+                <!-- UPDATE THESE LINKS WITH YOUR AFFILIATE IDs -->
+                <a href="https://partner.canva.com/YOUR_AFFILIATE_ID" target="_blank" rel="noopener" onclick="trackAffiliate('canva')" class="bg-white p-5 rounded-xl border-2 border-transparent hover:border-purple-500 hover:shadow-lg transition-all group">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md mb-3">C</div>
                     <h4 class="font-bold text-lg mb-2">Canva Pro</h4>
-                    <p class="text-sm text-gray-600 mb-3">Professional design tool with templates</p>
+                    <p class="text-sm text-gray-600 mb-3">Design tool with 1M+ templates</p>
                     <div class="text-sm text-purple-600 font-bold">Try Free →</div>
                 </a>
-                <a href="https://www.shutterstock.com?rid=YOUR_ID" target="_blank" onclick="trackAffiliate('shutterstock')" class="bg-white p-5 rounded-xl border-2 border-transparent hover:border-red-500 hover:shadow-lg transition-all group">
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md">S</div>
-                    </div>
+                <a href="https://www.shutterstock.com?rid=YOUR_AFFILIATE_ID" target="_blank" rel="noopener" onclick="trackAffiliate('shutterstock')" class="bg-white p-5 rounded-xl border-2 border-transparent hover:border-red-500 hover:shadow-lg transition-all group">
+                    <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md mb-3">S</div>
                     <h4 class="font-bold text-lg mb-2">Shutterstock</h4>
-                    <p class="text-sm text-gray-600 mb-3">400M+ royalty-free images</p>
+                    <p class="text-sm text-gray-600 mb-3">400M+ stock images</p>
                     <div class="text-sm text-red-600 font-bold">Get 10 Free →</div>
                 </a>
-                <a href="https://www.hostinger.com?REFERRALCODE=YOUR_CODE" target="_blank" onclick="trackAffiliate('hostinger')" class="bg-white p-5 rounded-xl border-2 border-transparent hover:border-blue-500 hover:shadow-lg transition-all group">
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md">H</div>
-                    </div>
+                <a href="https://www.hostinger.com?REFERRALCODE=YOUR_CODE" target="_blank" rel="noopener" onclick="trackAffiliate('hostinger')" class="bg-white p-5 rounded-xl border-2 border-transparent hover:border-blue-500 hover:shadow-lg transition-all group">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md mb-3">H</div>
                     <h4 class="font-bold text-lg mb-2">Hostinger</h4>
                     <p class="text-sm text-gray-600 mb-3">Fast web hosting</p>
                     <div class="text-sm text-blue-600 font-bold">Save 75% →</div>
@@ -171,6 +170,16 @@
             </div>
         </div>
 
+        <!-- MIDDLE AD -->
+        <div class="my-8 bg-gray-50 border border-gray-200 rounded-lg p-3 text-center">
+            <div class="text-xs text-gray-500 mb-2 uppercase">Advertisement</div>
+            <div class="bg-white rounded min-h-[250px] flex items-center justify-center">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6309207317896311" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            </div>
+        </div>
+
+        <!-- FEATURES -->
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
             <div class="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition-all text-center group">
                 <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">⚡</div>
@@ -195,6 +204,7 @@
         </div>
     </div>
 
+    <!-- PREMIUM MODAL -->
     <div id="premium-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-3xl max-w-lg w-full p-8 relative shadow-2xl">
             <button onclick="closePremiumModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
@@ -228,12 +238,11 @@
                     <span>Priority support</span>
                 </div>
             </div>
-            <button onclick="upgradeToPremium()" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-bold text-lg">
-                💳 Upgrade Now
-            </button>
+            <button onclick="upgradeToPremium()" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-bold text-lg">💳 Upgrade Now</button>
         </div>
     </div>
 
+    <!-- DONATE MODAL -->
     <div id="donate-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-8 relative shadow-2xl">
             <button onclick="closeDonateModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
@@ -247,19 +256,21 @@
                 <p class="text-gray-600">Support this free tool!</p>
             </div>
             <div class="space-y-3">
-                <a href="https://www.buymeacoffee.com/YOUR_USERNAME" target="_blank" onclick="trackDonation('buymeacoffee')" class="block w-full bg-yellow-400 text-gray-900 py-4 rounded-xl font-bold text-lg text-center hover:bg-yellow-500">
+                <!-- UPDATE THESE LINKS WITH YOUR USERNAMES -->
+                <a href="https://www.buymeacoffee.com/YOUR_USERNAME" target="_blank" rel="noopener" onclick="trackDonation('buymeacoffee')" class="block w-full bg-yellow-400 text-gray-900 py-4 rounded-xl font-bold text-lg text-center hover:bg-yellow-500">
                     ☕ Buy Me a Coffee ($5)
                 </a>
-                <a href="https://ko-fi.com/YOUR_USERNAME" target="_blank" onclick="trackDonation('kofi')" class="block w-full bg-blue-500 text-white py-4 rounded-xl font-bold text-lg text-center hover:bg-blue-600">
+                <a href="https://ko-fi.com/YOUR_USERNAME" target="_blank" rel="noopener" onclick="trackDonation('kofi')" class="block w-full bg-blue-500 text-white py-4 rounded-xl font-bold text-lg text-center hover:bg-blue-600">
                     💙 Ko-fi ($3)
                 </a>
-                <a href="https://www.paypal.com/donate/?hosted_button_id=YOUR_ID" target="_blank" onclick="trackDonation('paypal')" class="block w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg text-center hover:bg-blue-700">
+                <a href="https://www.paypal.com/donate/?hosted_button_id=YOUR_BUTTON_ID" target="_blank" rel="noopener" onclick="trackDonation('paypal')" class="block w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg text-center hover:bg-blue-700">
                     💳 PayPal
                 </a>
             </div>
         </div>
     </div>
 
+    <!-- STATS MODAL -->
     <div id="stats-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-3xl max-w-2xl w-full p-8 relative shadow-2xl">
             <button onclick="closeStatsModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
@@ -281,10 +292,40 @@
         </div>
     </div>
 
+    <!-- PRIVACY MODAL -->
+    <div id="privacy-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto">
+        <div class="min-h-screen px-4 py-8">
+            <div class="bg-white rounded-2xl max-w-4xl mx-auto p-8 relative">
+                <button onclick="closePrivacyModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                <h1 class="text-3xl font-bold mb-6">Privacy Policy</h1>
+                <div class="space-y-4 text-gray-700">
+                    <p><strong>Last updated:</strong> December 15, 2024</p>
+                    <h2 class="text-xl font-bold mt-6">1. Information We Collect</h2>
+                    <p>ImageCompress Pro processes images locally in your browser. We do not upload, store, or have access to your images.</p>
+                    <h2 class="text-xl font-bold mt-6">2. Third-Party Services</h2>
+                    <p>We use Google AdSense to display advertisements and Google Analytics to understand site usage.</p>
+                    <h2 class="text-xl font-bold mt-6">3. Cookies</h2>
+                    <p>We use cookies to remember your preferences and enable advertising services.</p>
+                    <h2 class="text-xl font-bold mt-6">4. Contact</h2>
+                    <p>Questions? Email: imagecompresspro@gmail.com</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="bg-gray-800 text-white py-8 mt-12">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="mb-2">© 2024 ImageCompress Pro - Free Image Compression Tool</p>
-            <p class="text-sm text-gray-400">Made with ❤️ for designers and developers</p>
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-4">
+                <a href="#" onclick="showPrivacyModal(); return false;" class="text-gray-400 hover:text-white mx-3">Privacy Policy</a>
+                <a href="#" class="text-gray-400 hover:text-white mx-3">Terms</a>
+                <a href="#" class="text-gray-400 hover:text-white mx-3">Contact</a>
+            </div>
+            <p class="text-center mb-2">© 2024 ImageCompress Pro - Free Image Compression Tool</p>
+            <p class="text-center text-sm text-gray-400">Made with ❤️ for designers and developers</p>
         </div>
     </footer>
 
@@ -378,7 +419,9 @@
             document.getElementById('stats-saved').textContent = (totalSaved / 1024).toFixed(2) + ' KB';
         }
         function closeStatsModal() { document.getElementById('stats-modal').classList.add('hidden'); }
-        function upgradeToPremium() { window.location.href = 'https://buy.stripe.com/YOUR_LINK'; }
+        function showPrivacyModal() { document.getElementById('privacy-modal').classList.remove('hidden'); }
+        function closePrivacyModal() { document.getElementById('privacy-modal').classList.add('hidden'); }
+        function upgradeToPremium() { window.location.href = 'https://buy.stripe.com/YOUR_STRIPE_LINK'; }
         function trackAffiliate(platform) { console.log('Affiliate:', platform); }
         function trackDonation(platform) { console.log('Donation:', platform); }
     </script>
